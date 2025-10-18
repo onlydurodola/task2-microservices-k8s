@@ -1,15 +1,13 @@
 provider: aws
 
-# Single-node setup
 primary:
   numNodes: 1
 
-# Replicas: 1 each for testing 
 replicas:
   master: 1
   tserver: 1
 
-# Resources: Low for single-node 
+resource:
   master:
     requests:
       cpu: 0.5
@@ -25,18 +23,15 @@ replicas:
       cpu: 1
       memory: 2.5Gi
 
-# Storage: Small sizes for hostpath 
 storage:
   master:
     size: 5Gi
-    storageClass: ""  # Uses default: microk8s-hostpath
+    storageClass: ""
   tserver:
     size: 5Gi
     storageClass: ""
 
-# Skip ulimit preflight check (fixes container crashes)
 preflight:
   skipUlimit: true
 
-# Disable LoadBalancer (avoids pending in single-node)
 enableLoadBalancer: false

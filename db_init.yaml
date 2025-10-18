@@ -1,4 +1,3 @@
-# db-init-job.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -9,39 +8,39 @@ spec:
     spec:
       containers:
       - name: ysqlsh
-        image: yugabytedb/yugabyte:2.18.1
-        command: 
+        image: yugabytedb/yugabyte:2025.1.1.1-b1  # Matches cluster image
+        command:
         - /bin/bash
         - -c
         - |
           set -e
           echo "Waiting for YugabyteDB to be ready..."
-          until /home/yugabyte/bin/ysqlsh -h yugabyte-yugabyte-ysql -c "SELECT 1" > /dev/null 2>&1; do
+          until /home/yugabyte/bin/ysqlsh -h yb-tserver-0.yb-tservers.task2.svc.cluster.local -U yugabyte -d yugabyte -c "SELECT 1" > /dev/null 2>&1; do
             echo "Waiting for database connection..."
             sleep 5
           done
-          
+
           echo "Creating tables..."
-          /home/yugabyte/bin/ysqlsh -h yugabyte-yugabyte-ysql -c "
+          /home/yugabyte/bin/ysqlsh -h yb-tserver-0.yb-tservers.task2.svc.cluster.local -U yugabyte -d yugabyte -c "
           CREATE TABLE IF NOT EXISTS inventory (
             item VARCHAR(100) PRIMARY KEY,
             stock INTEGER NOT NULL DEFAULT 0
           );
-          
+
           CREATE TABLE IF NOT EXISTS orders (
             order_id SERIAL PRIMARY KEY,
             item VARCHAR(100) NOT NULL,
             quantity INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           );
-          
-          INSERT INTO inventory (item, stock) VALUES 
+
+          INSERT INTO inventory (item, stock) VALUES
           ('apple', 100),
           ('banana', 150),
           ('orange', 75),
           ('grape', 200)
           ON CONFLICT (item) DO NOTHING;
-          
+
           SELECT 'Tables created and sample data inserted' as status;
           "
       restartPolicy: Never
