@@ -1,7 +1,7 @@
-provider: microk8s
+provider: aws
 
 primary:
-  numNodes: 1   # single-node cluster for testing/demo
+  numNodes: 1
 
 resource:
   requests:
@@ -13,10 +13,4 @@ resource:
 
 storage:
   size: 2Gi
-  class: microk8s-hostpath  # MicroK8s default StorageClass
-
-image:
-  tag: "2.25.2"
-
-service:
-  type: ClusterIP
+  class: standard  
