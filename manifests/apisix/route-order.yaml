@@ -1,0 +1,17 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: order-route
+  namespace: task2
+spec:
+  http:
+    - name: order
+      match:
+        paths:
+          - /order/*
+        methods:
+          - POST
+      backends:
+        - serviceName: order-service
+          servicePort: 8000
+

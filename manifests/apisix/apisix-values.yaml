@@ -1,0 +1,8 @@
+gateway:
+  type: NodePort
+  # NodePort will be assigned automatically; can optionally pin nodePort under service
+manager:
+  enabled: true
+ingressController:
+  enabled: true
+

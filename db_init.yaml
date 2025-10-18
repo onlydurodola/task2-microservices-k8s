@@ -1,0 +1,48 @@
+# db-init-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: yugabyte-db-init
+  namespace: task2
+spec:
+  template:
+    spec:
+      containers:
+      - name: ysqlsh
+        image: yugabytedb/yugabyte:2.18.1
+        command: 
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "Waiting for YugabyteDB to be ready..."
+          until /home/yugabyte/bin/ysqlsh -h yugabyte-yugabyte-ysql -c "SELECT 1" > /dev/null 2>&1; do
+            echo "Waiting for database connection..."
+            sleep 5
+          done
+          
+          echo "Creating tables..."
+          /home/yugabyte/bin/ysqlsh -h yugabyte-yugabyte-ysql -c "
+          CREATE TABLE IF NOT EXISTS inventory (
+            item VARCHAR(100) PRIMARY KEY,
+            stock INTEGER NOT NULL DEFAULT 0
+          );
+          
+          CREATE TABLE IF NOT EXISTS orders (
+            order_id SERIAL PRIMARY KEY,
+            item VARCHAR(100) NOT NULL,
+            quantity INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          );
+          
+          INSERT INTO inventory (item, stock) VALUES 
+          ('apple', 100),
+          ('banana', 150),
+          ('orange', 75),
+          ('grape', 200)
+          ON CONFLICT (item) DO NOTHING;
+          
+          SELECT 'Tables created and sample data inserted' as status;
+          "
+      restartPolicy: Never
+  backoffLimit: 3
