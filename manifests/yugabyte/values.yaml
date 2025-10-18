@@ -1,5 +1,35 @@
-provider: aws
+provider: aws  
 
+# Reduced replicas to 1 for single-node
+master:
+  replicas: 1
+tserver:
+  replicas: 1
+
+# Override DB pod resources (lower for node)
+master:
+  resources:
+    requests:
+      cpu: 1
+      memory: 1Gi
+    limits:
+      cpu: 1.5
+      memory: 1.5Gi
+tserver:
+  resources:
+    requests:
+      cpu: 1
+      memory: 2Gi
+    limits:
+      cpu: 1.5
+      memory: 2.5Gi
+
+# Fix storage: Use hostpath or default
+storage:
+  size: 5Gi  
+  class: ""  
+
+# These are for non-DB pods
 primary:
   numNodes: 1
 
@@ -10,7 +40,3 @@ resource:
   limits:
     cpu: 500m
     memory: 1Gi
-
-storage:
-  size: 2Gi
-  class: standard  
