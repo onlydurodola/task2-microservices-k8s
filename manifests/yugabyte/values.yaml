@@ -1,7 +1,7 @@
-provider: minikube
+provider: microk8s
 
 primary:
-  numNodes: 3
+  numNodes: 1   # single-node cluster for testing/demo
 
 resource:
   requests:
@@ -9,15 +9,14 @@ resource:
     memory: 512Mi
   limits:
     cpu: 500m
-    memory: 1024Mi
+    memory: 1Gi
 
 storage:
-  size: 5Gi
-  class: standard
+  size: 2Gi
+  class: microk8s-hostpath  # MicroK8s default StorageClass
 
 image:
   tag: "2.25.2"
 
 service:
   type: ClusterIP
-
