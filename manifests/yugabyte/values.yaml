@@ -1,11 +1,15 @@
 provider: aws
 
-# Single-node: 1 replica each 
+# Single-node setup
+primary:
+  numNodes: 1
+
+# Replicas: 1 each for testing 
+replicas:
   master: 1
   tserver: 1
 
-# Low resources to fit node (total ~1 CPU / 3Gi requested)
-resource:
+# Resources: Low for single-node 
   master:
     requests:
       cpu: 0.5
@@ -21,7 +25,7 @@ resource:
       cpu: 1
       memory: 2.5Gi
 
-# Small storage (total ~10Gi for 4 volumes: 2 per replica; fits hostpath)
+# Storage: Small sizes for hostpath 
 storage:
   master:
     size: 5Gi
@@ -30,21 +34,9 @@ storage:
     size: 5Gi
     storageClass: ""
 
-# Skip ulimit check (avoids CrashLoopBackOff in containers)
+# Skip ulimit preflight check (fixes container crashes)
 preflight:
   skipUlimit: true
 
-# Disable LoadBalancer (pending in single-node/MicroK8s)
+# Disable LoadBalancer (avoids pending in single-node)
 enableLoadBalancer: false
-
-# Your original sections (apply to sidecars/UI if needed)
-primary:
-  numNodes: 1
-
-resource:  # Global/non-DB (overrides above for sidecars)
-  requests:
-    cpu: 250m
-    memory: 512Mi
-  limits:
-    cpu: 500m
-    memory: 1Gi
