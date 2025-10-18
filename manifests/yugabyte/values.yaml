@@ -1,39 +1,47 @@
-provider: aws  
+provider: aws
 
-# Reduced replicas to 1 for single-node
-master:
-  replicas: 1
-tserver:
-  replicas: 1
+# Single-node: 1 replica each 
+  master: 1
+  tserver: 1
 
-# Override DB pod resources (lower for node)
-master:
-  resources:
+# Low resources to fit node (total ~1 CPU / 3Gi requested)
+resource:
+  master:
     requests:
+      cpu: 0.5
+      memory: 0.5Gi
+    limits:
       cpu: 1
       memory: 1Gi
-    limits:
-      cpu: 1.5
-      memory: 1.5Gi
-tserver:
-  resources:
+  tserver:
     requests:
-      cpu: 1
+      cpu: 0.5
       memory: 2Gi
     limits:
-      cpu: 1.5
+      cpu: 1
       memory: 2.5Gi
 
-# Fix storage: Use hostpath or default
+# Small storage (total ~10Gi for 4 volumes: 2 per replica; fits hostpath)
 storage:
-  size: 5Gi  
-  class: ""  
+  master:
+    size: 5Gi
+    storageClass: ""  # Uses default: microk8s-hostpath
+  tserver:
+    size: 5Gi
+    storageClass: ""
 
-# These are for non-DB pods
+# Skip ulimit check (avoids CrashLoopBackOff in containers)
+preflight:
+  skipUlimit: true
+
+# Disable LoadBalancer (pending in single-node/MicroK8s)
+enableLoadBalancer: false
+
+# Your original sections (apply to sidecars/UI if needed)
 primary:
   numNodes: 1
 
-resource:
+resource:  # Global/non-DB (overrides above for sidecars)
   requests:
     cpu: 250m
     memory: 512Mi
