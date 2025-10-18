@@ -16,7 +16,7 @@ storage:
   class: standard
 
 image:
-  tag: "2.18.1"
+  tag: "2.25.2"
 
 service:
   type: ClusterIP
