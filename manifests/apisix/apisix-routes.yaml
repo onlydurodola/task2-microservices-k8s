@@ -1,0 +1,26 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: microservices-routes
+  namespace: apisix
+spec:
+  http:
+    - name: order-route
+      match:
+        hosts:
+          - "*"
+        paths:
+          - /order/*
+      backends:
+        - serviceName: order-service
+          servicePort: 8000
+
+    - name: inventory-route
+      match:
+        hosts:
+          - "*"
+        paths:
+          - /inventory/*
+      backends:
+        - serviceName: inventory-service
+          servicePort: 8001

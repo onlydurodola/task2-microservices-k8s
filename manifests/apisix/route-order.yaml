@@ -5,13 +5,18 @@ metadata:
   namespace: task2
 spec:
   http:
-    - name: order
-      match:
-        paths:
-          - /order/*
-        methods:
-          - POST
-      backends:
-        - serviceName: order-service
-          servicePort: 8000
-
+  - name: order-route
+    match:
+      hosts:
+      - localhost
+      paths:
+      - /order*
+      - /orders
+    backends:
+    - serviceName: order-service
+      servicePort: 8000
+    plugins:
+    - name: proxy-rewrite
+      enable: true
+      config:
+        regex_uri: ["/order/(.*)", "/$1"]
