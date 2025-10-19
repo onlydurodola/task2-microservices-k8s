@@ -7,6 +7,22 @@ spec:
     spec:
       names:
         kind: K8sRequiredLabels
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            message:
+              type: string
+            labels:
+              type: array
+              description: >-
+                A list of required labels (keys only; values optional/any).
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: The required label key.
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
@@ -14,9 +30,8 @@ spec:
 
         violation[{"msg": msg}] {
           provided := {label | input.review.object.spec.template.metadata.labels[label]}
-          required := {r | r := input.parameters.labels[_]}
+          required := {r | r := input.parameters.labels[_].key}
           missing := required - provided
           count(missing) > 0
           msg := sprintf("missing required labels: %v", [missing])
         }
-

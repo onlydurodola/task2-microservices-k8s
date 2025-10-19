@@ -9,6 +9,6 @@ spec:
         kinds: ["Deployment"]
     namespaces: ["task2"]
   parameters:
+    message: "Deployments must have the 'secure-comm' label for secure communication policy."
     labels:
-      - "secure-comm"
-
+      - key: "secure-comm"
