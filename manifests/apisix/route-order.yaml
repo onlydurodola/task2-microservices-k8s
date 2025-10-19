@@ -5,10 +5,10 @@ metadata:
   namespace: task2
 spec:
   http:
-  - name: order-route
+  - name: order
     match:
       hosts:
-      - localhost
+      - "*"
       paths:
       - /order*
       - /orders

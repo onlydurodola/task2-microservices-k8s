@@ -5,12 +5,13 @@ metadata:
   namespace: task2
 spec:
   http:
-  - name: inventory-route
+  - name: inventory
     match:
       hosts:
-      - localhost
+      - "*"
       paths:
       - /stock*
+      - /inventory*
     backends:
     - serviceName: inventory-service
       servicePort: 8001
