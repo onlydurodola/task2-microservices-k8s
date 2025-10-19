@@ -15,8 +15,4 @@ spec:
     backends:
     - serviceName: order-service
       servicePort: 8000
-    plugins:
-    - name: proxy-rewrite
-      enable: true
-      config:
-        regex_uri: ["/order/(.*)", "/$1"]
+    
