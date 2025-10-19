@@ -1,0 +1,20 @@
+apiVersion: v1alpha1
+kind: GatewayProxy
+metadata:
+  name: apisix-gateway-proxy
+  namespace: apisix
+spec:
+  apisix:
+    deployment:
+      name: apisix-gateway
+      namespace: apisix
+    service:
+      name: apisix-gateway
+      namespace: apisix
+  controller:
+    deployment:
+      name: apisix-apisix-ingress-controller
+      namespace: apisix
+    service:
+      name: apisix-apisix-ingress-controller
+      namespace: apisix
